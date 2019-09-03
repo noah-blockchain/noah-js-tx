@@ -1,0 +1,25 @@
+import {Buffer} from 'safe-buffer';
+import {NoahTxDataSell, coinToBuffer} from '~/src';
+import decodeToArray from '../decode-to-array';
+
+describe('NoahTxDataSell', () => {
+    test('rlp encoded fields', () => {
+        const serializedTxData = (new NoahTxDataSell({
+            coinToSell: coinToBuffer('MNT'),
+            valueToSell: 1000,
+            coinToBuy: coinToBuffer('BELTCOIN'),
+            minimumValueToBuy: 5,
+        })).serialize();
+
+        expect(serializedTxData)
+            .toEqual(Buffer.from([218, 138, 77, 78, 84, 0, 0, 0, 0, 0, 0, 0, 130, 3, 232, 138, 66, 69, 76, 84, 67, 79, 73, 78, 0, 0, 5]));
+
+        expect(decodeToArray(serializedTxData))
+            .toEqual([
+                [77, 78, 84, 0, 0, 0, 0, 0, 0, 0],
+                [3, 232],
+                [66, 69, 76, 84, 67, 79, 73, 78, 0, 0],
+                [5],
+            ]);
+    });
+});
